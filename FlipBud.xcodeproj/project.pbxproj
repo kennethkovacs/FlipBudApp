@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4324221D2A75A3E100869818 /* BarcodeScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4324221C2A75A3E100869818 /* BarcodeScannerView.swift */; };
+		4324221F2A7C0AB100869818 /* SellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4324221E2A7C0AB100869818 /* SellView.swift */; };
 		433B31242A4D347E00BAFC87 /* FlipBudApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433B31232A4D347E00BAFC87 /* FlipBudApp.swift */; };
 		433B31262A4D347E00BAFC87 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433B31252A4D347E00BAFC87 /* ContentView.swift */; };
 		433B31282A4D348100BAFC87 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 433B31272A4D348100BAFC87 /* Assets.xcassets */; };
@@ -18,6 +19,7 @@
 
 /* Begin PBXFileReference section */
 		4324221C2A75A3E100869818 /* BarcodeScannerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BarcodeScannerView.swift; sourceTree = "<group>"; };
+		4324221E2A7C0AB100869818 /* SellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SellView.swift; sourceTree = "<group>"; };
 		433B31202A4D347E00BAFC87 /* FlipBud.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlipBud.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		433B31232A4D347E00BAFC87 /* FlipBudApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlipBudApp.swift; sourceTree = "<group>"; };
 		433B31252A4D347E00BAFC87 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -63,6 +65,7 @@
 				433B31292A4D348100BAFC87 /* Preview Content */,
 				433B31382A4D6E4600BAFC87 /* NextView.swift */,
 				4324221C2A75A3E100869818 /* BarcodeScannerView.swift */,
+				4324221E2A7C0AB100869818 /* SellView.swift */,
 			);
 			path = FlipBud;
 			sourceTree = "<group>";
@@ -152,6 +155,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4324221D2A75A3E100869818 /* BarcodeScannerView.swift in Sources */,
+				4324221F2A7C0AB100869818 /* SellView.swift in Sources */,
 				433B31262A4D347E00BAFC87 /* ContentView.swift in Sources */,
 				433B31242A4D347E00BAFC87 /* FlipBudApp.swift in Sources */,
 				433B31392A4D6E4600BAFC87 /* NextView.swift in Sources */,

@@ -10,8 +10,9 @@ import CodeScanner
 
 struct NextView: View {
     @State var scannedCode: String
-    // var responseJSON: [String: Any]
+    var responseJSON: [String: Any]
     @State private var isShowingScanner = false
+    @State private var isShowingSellScreen = false
     @Environment(\.presentationMode) var presentationMode
     
     var body: some View {
@@ -19,10 +20,38 @@ struct NextView: View {
             VStack {
                 Text("Scanned QR Code:")
                     .font(.title)
+                
+                if let newEst = responseJSON["new_est"] as? String {
+                    Text("New est: \(newEst)")
+                        .font(.headline)
+                        .padding()
+                }
+                
+                if let newOtherEst = responseJSON["new_other_est"] as? String {
+                    Text("New other est: \(newOtherEst)")
+                        .font(.headline)
+                        .padding()
+                }
+                
+                if let preOwnedEst = responseJSON["pre_owned_est"] as? String {
+                    Text("New est: \(preOwnedEst)")
+                        .font(.headline)
+                        .padding()
+                }
 
-                Text(scannedCode)
-                    .font(.headline)
-                    .padding()
+//                Text("New est: \(responseJSON["new_est"])")
+//                    .font(.headline)
+//                    .padding()
+                
+                Button("Sell") {
+                    isShowingSellScreen = true
+                }
+                .sheet(isPresented: $isShowingSellScreen) {
+                    SellView(barcode: "0027616785220", epid: "3096452")
+//                    if let epid = responseJSON["epid"] as? String {
+//                        SellView(barcode: scannedCode, epid: epid)
+//                    }
+                }
                 
                 Button("Scan again") {
                     isShowingScanner = true
@@ -37,25 +66,6 @@ struct NextView: View {
                         print("HTTP request completed")
                     }
                     .edgesIgnoringSafeArea(.all)
-                    // Works
-//                    CodeScannerView(codeTypes: [.ean13], showViewfinder: true) {
-//                        isShowingScanner = false
-//
-//                        switch $0 {
-//                        case .success(let result):
-//                            scannedCode = result.string
-//                            print("Found Result")
-//
-//                            // Send result to API
-//                            Task {
-//                                print("attempting request")
-//                                await handleRequest(result.string)
-//                            }
-//
-//                        case .failure(let error):
-//                            print("Scanning failed: \(error.localizedDescription)")
-//                        }
-//                    }
 
                 }
                 
