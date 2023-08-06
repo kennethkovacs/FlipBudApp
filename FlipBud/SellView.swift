@@ -1,45 +1,102 @@
 import SwiftUI
 
+enum Condition: String, CaseIterable, Identifiable {
+    case none = "Select"
+    case new = "New"
+    case likeNew = "Like New"
+    case veryGood = "Very Good"
+    case good = "Good"
+    case acceptable = "Acceptable"
+    var id: Self { self }
+}
+
 struct SellView: View {
     var barcode: String
     var epid: String
+    var year: String
+    var format: String
+    
     @State private var images = [UIImage]()
     @State private var binaryImages: [String] = []
     @State private var isShowingImagePicker = false
-    @State private var price = "12.34"
-    @State private var title = "The Graduate DVD - TEST LISTING"
+    @State private var price = ""
+    @State private var name = ""
+    // @State private var condition = ""
+    @State private var condition = Condition.none
+    @State private var extra = ""
+    
     @Environment(\.presentationMode) var presentationMode
     
     var body: some View {
         VStack {
             Form {
-                TextField("Price", text: $price)
-                TextField("Title", text: $title)
+                Section {
+                    TextField("The GodFather", text: $name)
+                } header: {
+                    Text("Name")
+                }
+                
+                Section {
+                    Picker("Choose condition", selection: $condition) {
+                        ForEach(Condition.allCases) { condition in
+                            Text(condition.rawValue).tag(condition)
+                        }
+                    }
+//                    Picker("Choose condition", selection: $condition) {
+//                        Text("New").tag(Condition.new)
+//                        Text("Like New").tag(Condition.likeNew)
+//                        Text("Very Good").tag(Condition.veryGood)
+//                        Text("Good").tag(Condition.good)
+//                        Text("Acceptable").tag(Condition.acceptable)
+//                    }
+                } header: {
+                    Text("Condition")
+                }
+        
+                Section {
+                    TextField("Widescreen Collection", text: $extra)
+                } header: {
+                    Text("Extras")
+                }
+                
+                Section {
+                    TextField("4.99", text: $price)
+                } header: {
+                    Text("Price")
+                }
+                
+//                TextField("Price", text: $price)
+//                TextField("Title", text: $title)
                 Button("Take Photo") {
                     isShowingImagePicker = true
                 }
-                Button("Done") {
-                    // Handle done action here, e.g. API call to send photos to the server
-                    print("Sending photos to server")
-                    isShowingImagePicker = false
-                }
+//                Button("Done") {
+//                    // Handle done action here, e.g. API call to send photos to the server
+//                    print("Sending photos to server")
+//                    isShowingImagePicker = false
+//                }
                 
                 Button("Submit") {
-                    print(images.count)
-                    sendHTTPRequest(barcode: barcode, epid: epid, title: title, price: price, images: images)
+                    if (extra == "") {
+                        let title = "\(name) (\(year)) - \(format) - \(condition.rawValue) Condition"
+                        print("Sending request to list product.")
+                        print("Barcode: \(barcode)")
+                        print("Epid: \(epid)")
+                        print("Title: \(title)")
+                        print("Price: \(price)")
+                        // sendHTTPRequest(barcode: barcode, epid: epid, title: title, price: price, images: images)
+                    } else {
+                        let title = "\(name) (\(year)) - \(format) - \(condition.rawValue) Condition - \(extra)"
+                        // sendHTTPRequest(barcode: barcode, epid: epid, title: title, price: price, images: images)
+                        print("Sending request to list product.")
+                        print("Barcode: \(barcode)")
+                        print("Epid: \(epid)")
+                        print("Title: \(title)")
+                        print("Price: \(price)")
+                    }
+                    // sendHTTPRequest(barcode: barcode, epid: epid, title: title, price: price, images: images)
                 }
                 
-//                Button("Submit") {
-//                    print(images.count)
-//                    // Convert images to base64 binary
-//                    for image in images {
-//                        if let base64Image = convertImageToBase64(image: image) {
-//                            binaryImages.append(base64Image)
-//                        }
-//                    }
-//
-//                    sendHTTPRequest(barcode: barcode, epid: epid, title: title, price: price, binaryImages: binaryImages)
-//                }
                 Button("Go back") {
                     presentationMode.wrappedValue.dismiss()
                 }
@@ -50,19 +107,62 @@ struct SellView: View {
         }
     }
     
+//    Form {
+//        Section {
+//            TextField("The GodFather", text: $name)
+//        } header: {
+//            Text("Name")
+//        }
+//
+//        Section {
+//            TextField("1972", text: $year)
+//        } header: {
+//            Text("Year")
+//        }
+//
+//        Section {
+//            Picker("Choose format", selection: $format) {
+//                Text("DVD").tag(Format.dvd)
+//                Text("Blu-ray").tag(Format.bluray)
+//            }
+//        } header: {
+//            Text("Format")
+//        }
+//
+//        Section {
+//            Picker("Choose condition", selection: $condition) {
+//                Text("New").tag(Condition.new)
+//                Text("Like New").tag(Condition.likeNew)
+//                Text("Very Good").tag(Condition.veryGood)
+//                Text("Good").tag(Condition.good)
+//                Text("Acceptable").tag(Condition.acceptable)
+//            }
+//        } header: {
+//            Text("Condition")
+//        }
+//
+//        Section {
+//            TextField("Widescreen Collection", text: $extra)
+//        } header: {
+//            Text("Extras")
+//        }
+//
+//        Button("List product") {
+//            if (extra == "") {
+//                print("\(name) (\(year)) - \(format.rawValue) - \(condition.rawValue)")
+//            } else {
+//                print("\(name) (\(year)) - \(format.rawValue) - \(condition.rawValue) - \(extra)")
+//
+//            }
+//        }
+//    }
+    
     func convertImageToBase64(image: UIImage) -> String? {
         if let data = image.pngData() {
             return data.base64EncodedString()
         }
         return nil
     }
-    
-//    func convertImageToBase64(image: UIImage) -> String? {
-//        if let data = image.jpegData(compressionQuality: 0.5) {
-//            return data.base64EncodedString()
-//        }
-//        return nil
-//    }
     
     func resizeImage(image: UIImage, newWidth: CGFloat) -> UIImage? {
         let scale = newWidth / image.size.width

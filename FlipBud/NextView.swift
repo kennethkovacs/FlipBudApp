@@ -18,39 +18,37 @@ struct NextView: View {
     var body: some View {
         NavigationView {
             VStack {
-                Text("Scanned QR Code:")
+                Text("Estimated prices:")
                     .font(.title)
                 
-                if let newEst = responseJSON["new_est"] as? String {
-                    Text("New est: \(newEst)")
-                        .font(.headline)
-                        .padding()
-                }
-                
-                if let newOtherEst = responseJSON["new_other_est"] as? String {
+                if let newEst = responseJSON["new_est"] as? Double {
+                                Text("New est: \(newEst)")
+                                    .font(.headline)
+                                    .padding()
+                            }
+                            
+                if let newOtherEst = responseJSON["new_other_est"] as? Double {
                     Text("New other est: \(newOtherEst)")
                         .font(.headline)
                         .padding()
                 }
                 
-                if let preOwnedEst = responseJSON["pre_owned_est"] as? String {
-                    Text("New est: \(preOwnedEst)")
+                if let preOwnedEst = responseJSON["pre_owned_est"] as? Double {
+                    Text("Pre-owned est: \(preOwnedEst)")
                         .font(.headline)
                         .padding()
                 }
-
-//                Text("New est: \(responseJSON["new_est"])")
-//                    .font(.headline)
-//                    .padding()
                 
                 Button("Sell") {
                     isShowingSellScreen = true
                 }
                 .sheet(isPresented: $isShowingSellScreen) {
-                    SellView(barcode: "0027616785220", epid: "3096452")
-//                    if let epid = responseJSON["epid"] as? String {
-//                        SellView(barcode: scannedCode, epid: epid)
-//                    }
+                    let barcode = scannedCode
+                    let epid = (responseJSON["epid"] as? String) ?? ""
+                    let year = (responseJSON["year"] as? String) ?? ""
+                    let format = (responseJSON["format"] as? String) ?? ""
+                    
+                    SellView(barcode: barcode, epid: epid, year: year, format: format)
                 }
                 
                 Button("Scan again") {

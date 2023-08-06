@@ -29,8 +29,7 @@ struct ContentView: View {
                         scannedCode = barcode
                         print("Detected barcode: \(barcode)")
                         print("Sending HTTP request")
-                        // self.sendHTTPRequest(barcode: barcode)
-                        showNext = true
+                        self.sendHTTPRequest(barcode: barcode)
                         print("HTTP request completed")
                     }
                     .edgesIgnoringSafeArea(.all)
