@@ -9,7 +9,8 @@ import SwiftUI
 import CodeScanner
 
 struct NextView: View {
-    @State var scannedCode: String
+    // @State var scannedCode: String
+    @State var barcode: String
     var responseJSON: [String: Any]
     @State private var isShowingScanner = false
     @State private var isShowingSellScreen = false
@@ -43,7 +44,7 @@ struct NextView: View {
                     isShowingSellScreen = true
                 }
                 .sheet(isPresented: $isShowingSellScreen) {
-                    let barcode = scannedCode
+                    // let barcode = scannedCode
                     let epid = (responseJSON["epid"] as? String) ?? ""
                     let year = (responseJSON["year"] as? String) ?? ""
                     let format = (responseJSON["format"] as? String) ?? ""
@@ -57,7 +58,7 @@ struct NextView: View {
                 .sheet(isPresented: $isShowingScanner) {
                     BarcodeScannerView { barcode in
                         isShowingScanner = false
-                        scannedCode = barcode
+                        self.barcode = barcode
                         print("Detected barcode: \(barcode)")
                         print("Sending HTTP request")
                         // self.sendHTTPRequest(barcode: barcode)
@@ -108,13 +109,11 @@ struct NextView: View {
     }
     
     func handleScan(result: Result<ScanResult, ScanError>) {
-        print("6")
         isShowingScanner = false
         
         switch result {
         case .success(let result):
-            scannedCode = result.string
-            print("7")
+            self.barcode = result.string
             // print(result.string)
             
             // Send result to API

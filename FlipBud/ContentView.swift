@@ -12,7 +12,8 @@ import CodeScanner
 struct ContentView: View {
     @State private var isShowingScanner = false
     @State private var isPresentingScanner = false
-    @State private var scannedCode: String?
+    // @State private var scannedCode: String?
+    @State private var barcode: String?
     @State private var showNext = false
     @State private var responseJSON: [String: Any]?
     
@@ -26,7 +27,7 @@ struct ContentView: View {
                 .sheet(isPresented: $isShowingScanner) {
                     BarcodeScannerView { barcode in
                         isShowingScanner = false
-                        scannedCode = barcode
+                        self.barcode = barcode
                         print("Detected barcode: \(barcode)")
                         print("Sending HTTP request")
                         self.sendHTTPRequest(barcode: barcode)
@@ -36,7 +37,7 @@ struct ContentView: View {
                 }
 
                 if showNext {
-                    NavigationLink(destination: NextView(scannedCode: scannedCode ?? "", responseJSON: responseJSON ?? [:]), isActive: $showNext) {
+                    NavigationLink(destination: NextView(barcode: barcode ?? "", responseJSON: responseJSON ?? [:]), isActive: $showNext) {
                         EmptyView()
                     }
                     .navigationTitle("Finish scanning")
@@ -65,7 +66,7 @@ struct ContentView: View {
                         let jsonData = try JSONSerialization.data(withJSONObject: json, options: .prettyPrinted)
                         if let jsonString = String(data: jsonData, encoding: .utf8) {
                             // jsonString now contains the JSON data as a string
-                            scannedCode = jsonString
+                            // scannedCode = jsonString
                             responseJSON = json
                             showNext = true
                         }
@@ -91,7 +92,7 @@ struct ContentView: View {
          switch result {
          case .success(let result):
              print(result.string)
-             scannedCode = result.string
+             self.barcode = result.string
              showNext = true
          case .failure(let error):
              print("Scanning failed: \(error.localizedDescription)")
