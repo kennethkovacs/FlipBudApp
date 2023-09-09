@@ -16,25 +16,62 @@ struct NextView: View {
     @State private var isShowingSellScreen = false
     @Environment(\.presentationMode) var presentationMode
     
+    @State private var estimatedPrice: Double? = nil
+    
     var body: some View {
         NavigationView {
             VStack {
-                Text("Estimated prices:")
-                    .font(.title)
+//                Text("Estimated prices:")
+//                    .font(.title)
                 
-                if let newEst = responseJSON["new_est"] as? Double {
+//                Text("Estimated prices:")
+//                                    .font(.title)
+//                                    .onAppear {
+//                                        if let stringValue = responseJSON["new_est"] as? String,
+//                                           let doubleValue = Double(stringValue) {
+//                                            self.estimatedPrice = doubleValue
+//                                        } else {
+//                                            self.estimatedPrice = nil
+//                                        }
+//                                    }
+//
+//                                // Reference the state variable here
+//                                if let price = estimatedPrice {
+//                                    Text("Estimated price: \(price)")
+//                                        .font(.title)
+//                                } else {
+//                                    Text("Error retrieving price.")
+//                                        .font(.title)
+//                                }
+                // Print value type
+//                Text("Estimated prices:")
+//                    .font(.title)
+//                    .onAppear { // Add the onAppear modifier here
+//                        if let value = responseJSON["new_est"] {
+//                                print("Type of new_est: \(type(of: value))")
+//                            } else {
+//                                print("new_est not found")
+//                            }
+//                         print("responseJSON new_est: \(responseJSON["new_est"])")
+//                         print("responseJSON contents: \(responseJSON)")
+//                    }
+                
+//                Text("Estimated price: \(responseJSON["new_est"] as? Double ?? 0.0)")
+//                    .font(.title)
+                                
+                if let newEst = responseJSON["new_est"] as? String {
                                 Text("New est: \(newEst)")
                                     .font(.headline)
                                     .padding()
                             }
                             
-                if let newOtherEst = responseJSON["new_other_est"] as? Double {
+                if let newOtherEst = responseJSON["new_other_est"] as? String {
                     Text("New other est: \(newOtherEst)")
                         .font(.headline)
                         .padding()
                 }
-                
-                if let preOwnedEst = responseJSON["pre_owned_est"] as? Double {
+                                
+                if let preOwnedEst = responseJSON["pre_owned_est"] as? String {
                     Text("Pre-owned est: \(preOwnedEst)")
                         .font(.headline)
                         .padding()
@@ -44,7 +81,6 @@ struct NextView: View {
                     isShowingSellScreen = true
                 }
                 .sheet(isPresented: $isShowingSellScreen) {
-                    // let barcode = scannedCode
                     let epid = (responseJSON["epid"] as? String) ?? ""
                     let year = (responseJSON["year"] as? String) ?? ""
                     let format = (responseJSON["format"] as? String) ?? ""
@@ -69,12 +105,42 @@ struct NextView: View {
                 }
                 
                 Button("Back to Home") {
-                               // Dismiss the current view and return to the previous view
-                               presentationMode.wrappedValue.dismiss()
-                           }
+                    // Dismiss the current view and return to the previous view
+                    presentationMode.wrappedValue.dismiss()
+                }
             }
         }
     }
+    
+//    func sendHTTPRequest(barcode: String) {
+//        // Show sheet after getting response with showNext parameter
+//        let url = URL(string: "https://king-prawn-app-sh6ua.ondigitalocean.app/api/dvds/\(barcode)")!
+//        var request = URLRequest(url: url)
+//        request.httpMethod = "GET"
+//
+//        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+//            if let error = error {
+//                print("Error: \(error)")
+//            } else if let data = data {
+//                let str = String(data: data, encoding: .utf8)
+//                print("Server response: \(str ?? "")")
+//
+//                do {
+//                    if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+//                        print("JSON response: \(json)")
+//                        let jsonData = try JSONSerialization.data(withJSONObject: json, options: .prettyPrinted)
+//                        if let jsonString = String(data: jsonData, encoding: .utf8) {
+//                            responseJSON = json
+//                            showNext = true
+//                        }
+//                    }
+//                } catch {
+//                    print("Error parsing JSON: \(error)")
+//                }
+//            }
+//        }
+//        task.resume()
+//    }
     
     func listProduct() {
         let url = URL(string: "url")!
@@ -91,8 +157,6 @@ struct NextView: View {
         
         let url = URL(string: "https://flipbud.onrender.com/api/dvds/\(result)")!
         var request = URLRequest(url: url)
-        // request.setValue("application/json", forHTTPHeaderField: "Content-Type"))
-        // request.httpMethod = "GET"
         print("Starting URLSession")
         URLSession.shared.dataTask(with: request) { data, response, error in
             if let data = data {
@@ -114,9 +178,6 @@ struct NextView: View {
         switch result {
         case .success(let result):
             self.barcode = result.string
-            // print(result.string)
-            
-            // Send result to API
             
         case .failure(let error):
             print("Scanning failed: \(error.localizedDescription)")

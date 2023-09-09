@@ -16,6 +16,7 @@ struct ContentView: View {
     @State private var barcode: String?
     @State private var showNext = false
     @State private var responseJSON: [String: Any]?
+    @State private var dvdDoesNotExist = false
     
     var body: some View {
         NavigationView {
@@ -44,6 +45,11 @@ struct ContentView: View {
                 }
             }
             .navigationBarTitle("FlipBud")
+            .alert("Could not find dvd.", isPresented: $dvdDoesNotExist) {
+                Text("Continue")
+            } message: {
+                Text("Please scan your next dvd.")
+            }
         }
     }
     
@@ -57,25 +63,33 @@ struct ContentView: View {
             if let error = error {
                 print("Error: \(error)")
             } else if let data = data {
+//                if (!data) {
+//                    dvdDoesNotExist = true
+//                    return
+//                }
                 let str = String(data: data, encoding: .utf8)
-                print("Server response: \(str ?? "")")
+                // print("Server response: \(str ?? "")")
+                
+                // Dictionary<String, Any> - new
+                // Dictionary<String, Any> - existing
                 
                 do {
                     if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
-                        print("JSON response: \(json)")
+                        // print("JSON response: \(json)")
+                        // print(type(of: json))
+                        print(type(of: json["data"]))
+                        print("Json data: \(json["data"])")
+                        if json["data"] is NSNull {
+                            dvdDoesNotExist = true
+                            return
+                        }
                         let jsonData = try JSONSerialization.data(withJSONObject: json, options: .prettyPrinted)
                         if let jsonString = String(data: jsonData, encoding: .utf8) {
-                            // jsonString now contains the JSON data as a string
-                            // scannedCode = jsonString
                             responseJSON = json
+                            let year = (responseJSON?["year"] as? String) ?? ""
+                            print("Dvd year: \(year)")
                             showNext = true
                         }
-                        
-                        
-                        
-//                        if let new = json["new"] as? [String: Any] {
-//                            print("Average price of new: \(new["average"])")
-//                        }
                     }
                 } catch {
                     print("Error parsing JSON: \(error)")
@@ -83,7 +97,7 @@ struct ContentView: View {
             }
         }
         task.resume()
-        }
+    }
     
 
     func handleScan(result: Result<ScanResult, ScanError>) {
